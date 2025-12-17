@@ -1,74 +1,93 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { SplitText } from "gsap/all";
-import { useRef } from "react";
-import { useMediaQuery } from "react-responsive";
+import { useGSAP } from "@gsap/react"; // React hook that safely runs GSAP animations and handles cleanup automatically
+import gsap from "gsap"; // Core GSAP animation engine
+import { SplitText } from "gsap/all"; // GSAP plugin that splits text into characters, words, or lines for detailed animations
+import { useRef } from "react"; // Used to reference the <video> DOM element
+import { useMediaQuery } from "react-responsive"; // Hook for handling responsive design based on media queries (used to change scroll behavior based on device)
 
 const Hero = () => {
- const videoRef = useRef();
+ const videoRef = useRef(); // Stores a reference to the <video> element. Required because GSAP cannot directly manipulate React refs. Later used to animate currentTime
  
- const isMobile = useMediaQuery({ maxWidth: 767 });
+ const isMobile = useMediaQuery({ maxWidth: 767 }); // Returns true if screen width<=767px
  
  useGSAP(() => {
-	const heroSplit = new SplitText(".title", {
-	 type: "chars, words",
+	// Targets .title → <h1 className="title">MOJITO</h1>
+	// Splits text into characters and words for animation
+	// GSAP wraps each character in a <span>
+	// Result (concpetual): <h1><span class="char">M</span><span class="char">O</span>...</h1> or <span>M</span><span>O</span><span>J</span><span>I</span><span>T</span><span>O</span>
+	const heroSplit = new SplitText(".title", {	
+	 type: "chars, words", 
 	});
 	
+	// Targets .subtitle → <p className="subtitle">...</p>
+	// Splits text into lines for animation
 	const paragraphSplit = new SplitText(".subtitle", {
 	 type: "lines",
 	});
-	
-	// Apply text-gradient class once before animating
+	 
+	// Apply text-gradient class to heroSplit.chars once before animating to each character. Done before animation. Ensures gradient animates together with movement. Why not in CSS directly? Because characters don’t exist until SplitText runs
 	heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
 	
+	// Animate each character from yPercent: 100 (below view) to yPercent: 0 (normal position)
+	// Each character starts 100% below its position and lides upward into place
 	gsap.from(heroSplit.chars, {
 	 yPercent: 100,
 	 duration: 1.8,
-	 ease: "expo.out",
-	 stagger: 0.06,
+	 ease: "expo.out", // Fast start, smooth landing
+	 stagger: 0.06, // Characters animate one after another
 	});
 	
+	// Each line starts 100% below its position and slides upward into place
 	gsap.from(paragraphSplit.lines, {
 	 opacity: 0,
 	 yPercent: 100,
 	 duration: 1.8,
 	 ease: "expo.out",
 	 stagger: 0.06,
-	 delay: 1,
+	 delay: 1, // Delay so that subtitle animation starts after hero title animation. Without delay, there will be too many elements animating at once and it looks messy
 	});
 	
+	// Leaf and arrow scroll animations
+	// Moves right leaf down 200px, left leaf up 200px, arrow down 100px as user scrolls through #hero section
 	gsap
 	.timeline({
 	 scrollTrigger: {
 		trigger: "#hero",
 		start: "top top",
 		end: "bottom top",
-		scrub: true,
+		scrub: true, // Links animation progress to scroll progress
 	 },
 	})
 	.to(".right-leaf", { y: 200 }, 0)
 	.to(".left-leaf", { y: -200 }, 0)
 	.to(".arrow", { y: 100 }, 0);
 	
+	// Different end values for mobile and desktop for better effect
+	// On mobile, video scrolls out of view faster due to smaller screen height
 	const startValue = isMobile ? "top 50%" : "center 60%";
 	const endValue = isMobile ? "120% top" : "bottom top";
+
+	// Video scroll animation
+	// Animates video currentTime from 0 to video duration as user scrolls through the video
 	
 	let tl = gsap.timeline({
 	 scrollTrigger: {
 		trigger: "video",
 		start: startValue,
 		end: endValue,
-		scrub: true,
-		pin: true,
+		scrub: true, // Links animation progress to scroll progress
+		pin: true, // Pins video in place during scroll
 	 },
 	});
 	
+	// Waits until video metadata loads
+	// Then animates video currentTime from 0 to video duration
+	// Scroll position controls playback
 	videoRef.current.onloadedmetadata = () => {
 	 tl.to(videoRef.current, {
 		currentTime: videoRef.current.duration,
 	 });
 	};
- }, []);
+ }, []); // Empty dependency array ensures this runs once on mount
  
  return (
 	<>
