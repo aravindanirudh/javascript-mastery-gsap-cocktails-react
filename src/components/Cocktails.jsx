@@ -6,19 +6,19 @@ const Cocktails = () => {
  useGSAP(() => {
 	const parallaxTimeline = gsap.timeline({
 	 scrollTrigger: {
-		trigger: '#cocktails',
-		start: 'top 30%',
-		end: 'bottom 80%',
-		scrub: true,
+		trigger: '#cocktails', // Trigger the animation when the #cocktails section is in view
+		start: 'top 30%', // Start animation when top of section reaches 30% of viewport height
+		end: 'bottom 80%', // End animation when bottom of section reaches 80% of viewport height
+		scrub: true, // Smooth scrubbing, ties animation progress to scrollbar position
 	 }
 	})
 	
-	parallaxTimeline
+	parallaxTimeline // Create a parallax effect for the left and right leaf images
 	 .from('#c-left-leaf', {
-		x: -100, y: 100
+		x: -100, y: 100 // Move left leaf from left and down
 	})
 	 .from('#c-right-leaf', {
-		x: 100, y: 100
+		x: 100, y: 100 // Move right leaf from right and down
 	})
  })
  

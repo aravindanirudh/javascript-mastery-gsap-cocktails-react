@@ -63,8 +63,8 @@ const Hero = () => {
 	
 	// Different end values for mobile and desktop for better effect
 	// On mobile, video scrolls out of view faster due to smaller screen height
-	const startValue = isMobile ? "top 50%" : "center 60%";
-	const endValue = isMobile ? "120% top" : "bottom top";
+	const startValue = isMobile ? "top 50%" : "center 60%"; // When video is halfway visible on mobile, 60% visible on desktop
+	const endValue = isMobile ? "120% top" : "bottom top"; // When video is fully out of view on mobile, fully out of view on desktop
 
 	// Video scroll animation
 	// Animates video currentTime from 0 to video duration as user scrolls through the video
@@ -128,12 +128,13 @@ const Hero = () => {
 		</div>
 	 </section>
 	 
+	 {/* Video container positioned absolutely to cover entire viewport and separated from noisy overlay */}
 	 <div className="video absolute inset-0">
 		<video
-		 ref={videoRef}
-		 muted
-		 playsInline
-		 preload="auto"
+		 ref={videoRef} // Reference to <video> element for GSAP animation
+		 muted // Mute video to allow autoplay in browsers
+		 playsInline // Hides player controls
+		 preload="auto" // Preload video for smoother playback
 		 src="/videos/output.mp4"
 		/>
 	 </div>

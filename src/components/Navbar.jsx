@@ -7,15 +7,15 @@ const Navbar = () => {
  useGSAP(() => {
 	const navTween = gsap.timeline({
 	 scrollTrigger: {
-		trigger: 'nav',
-		start: 'bottom top'
+		trigger: 'nav', // Element to trigger the animation
+		start: 'bottom top' // Start when the bottom of the nav hits the top of the viewport
 	 }
 	});
 	
 	navTween.fromTo('nav', { backgroundColor: 'transparent' }, {
-	 backgroundColor: '#00000050',
+	 backgroundColor: '#00000050', // Semi-transparent black
 	 backdropFilter: 'blur(10px)', // In tutorial, it was backgroundFilter but there is no such CSS property so it must be backdropFilter
-	 duration: 1,
+	 duration: 1, // 1 second duration
 	 ease: 'power1.inOut',
 	});
  })

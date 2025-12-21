@@ -4,23 +4,26 @@ import { useGSAP } from '@gsap/react'
 
 const About = () => {
  useGSAP(() => {
+	// Split the title into words
 	const titleSplit = SplitText.create('#about h2', {
-	 type: 'words'
+	 type: 'words' // Split by words
 	})
 	
+	// Create a timeline for scroll-triggered animations
 	const scrollTimeline = gsap.timeline({
 	 scrollTrigger: {
-		trigger: '#about',
-		start: 'top center'
+		trigger: '#about', // Element that triggers the animation
+		start: 'top center' // Animation starts when the top of the trigger hits the center of the viewport
 	 }
 	})
 	
+	// Animate the title words and grid images
 	scrollTimeline
 	 .from(titleSplit.words, {
-		opacity: 0, duration: 1, yPercent: 100, ease: 'expo.out', stagger: 0.02
+		opacity: 0, duration: 1, yPercent: 100, ease: 'expo.out', stagger: 0.02 // Animate each word with a slight delay
 	})
 	 .from('.top-grid div, .bottom-grid div', {
-		opacity: 0, duration: 1, ease: 'power1.inOut', stagger: 0.04,
+		opacity: 0, duration: 1, ease: 'power1.inOut', stagger: 0.04, // Animate grid images with a staggered effect
 	}, '-=0.5')
  })
  
@@ -46,7 +49,7 @@ const About = () => {
 				<span>4.5</span>/5
 			 </p>
 			 <p className="text-sm text-white-100">
-				More than +12000 customers
+				12000+ customers
 			 </p>
 			</div>
 		 </div>
